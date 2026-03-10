@@ -19,21 +19,21 @@ A collection of skills for [Claude Code](https://claude.ai/claude-code).
 
 This installs all skills and keeps them updated automatically.
 
-### Option 2: Manual (single skill)
+### Option 2: Manual
 
-To install just the `code-explainer` skill:
+Install all skills:
 
 ```bash
-# Create the skill directory
-mkdir -p ~/.claude/skills/code-explainer
-
-# Download the skill
-curl -sL \
-  https://raw.githubusercontent.com/christyjacob4/claude-tricks/main/skills/code-explainer/SKILL.md \
-  -o ~/.claude/skills/code-explainer/SKILL.md
+curl -sL https://raw.githubusercontent.com/christyjacob4/claude-tricks/main/install.sh | bash
 ```
 
-Skills placed in `~/.claude/skills/` are available globally across all projects. No restart needed — Claude Code picks them up automatically.
+Or install a specific skill:
+
+```bash
+curl -sL https://raw.githubusercontent.com/christyjacob4/claude-tricks/main/install.sh | bash -s code-explainer
+```
+
+Skills are installed to `~/.claude/skills/` and available globally across all projects. No restart needed.
 
 ## License
 
