@@ -1,9 +1,18 @@
 {
+  "name": "claude-tricks",
+  "owner": {
+    "name": "christyjacob4",
+    "url": "https://github.com/christyjacob4"
+  },
   "plugins": [
     {
       "name": "claude-tricks",
       "description": "A collection of skills that teach Claude new tricks — starting with code-explainer for visual codebase exploration with ASCII diagrams.",
-      "url": "https://github.com/christyjacob4/claude-tricks"
+      "source": {
+        "type": "github",
+        "owner": "christyjacob4",
+        "repo": "claude-tricks"
+      }
     }
   ]
 }
