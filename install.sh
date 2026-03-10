@@ -7,7 +7,7 @@ BASE_URL="https://raw.githubusercontent.com/$REPO/$BRANCH"
 SKILLS_DIR="$HOME/.claude/skills"
 
 # Get list of available skills
-SKILLS=(code-explainer)
+SKILLS=(code-explainer auto-research)
 
 install_skill() {
   local skill="$1"

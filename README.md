@@ -7,6 +7,7 @@ A collection of skills for [Claude Code](https://claude.ai/claude-code).
 | Skill | Description |
 |-------|-------------|
 | [code-explainer](skills/code-explainer/SKILL.md) | Explains codebases visually with ASCII architecture diagrams, code flow tracing, and interactive deep-dives |
+| [auto-research](skills/auto-research/SKILL.md) | Autonomous research loop — runs experiments on GPUs, keeps improvements, discards failures, and iterates until stopped |
 
 ## Install
 
