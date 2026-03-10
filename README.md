@@ -10,15 +10,30 @@ A collection of skills for [Claude Code](https://claude.ai/claude-code).
 
 ## Install
 
-**Option 1: Plugin (recommended)**
+### Option 1: Plugin (recommended)
 
-Run `/plugin` in Claude Code, add `christyjacob4/claude-tricks` as a marketplace, and install.
+1. Open Claude Code and run `/plugin`
+2. Select **Add Marketplace**
+3. Enter `christyjacob4/claude-tricks`
+4. Install the `claude-tricks` plugin
 
-**Option 2: Manual**
+This installs all skills and keeps them updated automatically.
+
+### Option 2: Manual (single skill)
+
+To install just the `code-explainer` skill:
 
 ```bash
-mkdir -p ~/.claude/skills/code-explainer && curl -sL https://raw.githubusercontent.com/christyjacob4/claude-tricks/main/skills/code-explainer/SKILL.md -o ~/.claude/skills/code-explainer/SKILL.md
+# Create the skill directory
+mkdir -p ~/.claude/skills/code-explainer
+
+# Download the skill
+curl -sL \
+  https://raw.githubusercontent.com/christyjacob4/claude-tricks/main/skills/code-explainer/SKILL.md \
+  -o ~/.claude/skills/code-explainer/SKILL.md
 ```
+
+Skills placed in `~/.claude/skills/` are available globally across all projects. No restart needed — Claude Code picks them up automatically.
 
 ## License
 
