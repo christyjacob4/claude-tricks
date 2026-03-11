@@ -1,5 +1,5 @@
 {
   "name": "claude-tricks",
-  "description": "A collection of skills that teach Claude new tricks — starting with code-explainer, which gives Claude the ability to visually explain any codebase with ASCII diagrams and interactive flow exploration.",
+  "description": "A collection of skills that teach Claude new tricks.",
   "version": "0.1.0"
 }

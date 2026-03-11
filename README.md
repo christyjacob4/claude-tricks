@@ -1,6 +1,6 @@
 # claude-tricks
 
-A collection of skills for [Claude Code](https://claude.ai/claude-code).
+A collection of my favourite skills for [Claude Code](https://claude.ai/claude-code) — some written by me, some sourced from the web.
 
 ## Skills
 
@@ -8,6 +8,7 @@ A collection of skills for [Claude Code](https://claude.ai/claude-code).
 |-------|-------------|
 | [code-explainer](skills/code-explainer/SKILL.md) | Explains codebases visually with ASCII architecture diagrams, code flow tracing, and interactive deep-dives |
 | [auto-research](skills/auto-research/SKILL.md) | Autonomous research loop — runs experiments on GPUs, keeps improvements, discards failures, and iterates until stopped |
+| [alphaxiv-paper-lookup](skills/alphaxiv-paper-lookup/SKILL.md) | Look up any arxiv paper on alphaxiv.org to get a structured AI-generated overview |
 
 ## Install
 
@@ -20,18 +21,24 @@ A collection of skills for [Claude Code](https://claude.ai/claude-code).
 
 This installs all skills and keeps them updated automatically.
 
-### Option 2: Manual
+### Option 2: npx
 
-Install all skills:
+Install all skills globally:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/christyjacob4/claude-tricks/main/install.sh | bash
+npx skills add christyjacob4/claude-tricks -g -y
 ```
 
 Or install a specific skill:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/christyjacob4/claude-tricks/main/install.sh | bash -s code-explainer
+npx skills add christyjacob4/claude-tricks -g -y --skill code-explainer
+```
+
+Preview available skills without installing:
+
+```bash
+npx skills add christyjacob4/claude-tricks --list
 ```
 
 Skills are installed to `~/.claude/skills/` and available globally across all projects. No restart needed.
