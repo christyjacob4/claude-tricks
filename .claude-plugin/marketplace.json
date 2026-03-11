@@ -8,12 +8,13 @@
     {
       "name": "claude-tricks",
       "description": "A collection of skills that teach Claude new tricks.",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/christyjacob4/claude-tricks.git"
-      },
-      "category": "development",
-      "homepage": "https://github.com/christyjacob4/claude-tricks"
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/code-explainer",
+        "./skills/auto-research",
+        "./skills/alphaxiv-paper-lookup"
+      ]
     }
   ]
 }
