@@ -9,7 +9,7 @@
       "name": "claude-tricks",
       "description": "A collection of skills that teach Claude new tricks.",
       "source": "./",
-      "strict": false,
+      "strict": true,
       "skills": [
         "./skills/code-explainer",
         "./skills/auto-research",
