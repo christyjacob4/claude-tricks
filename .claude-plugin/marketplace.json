@@ -16,7 +16,8 @@
         "./skills/alphaxiv-paper-lookup",
         "./skills/guided-learning",
         "./skills/frontend-design",
-        "./skills/investigate"
+        "./skills/investigate",
+        "./skills/debug"
       ]
     }
   ]
