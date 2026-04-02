@@ -11,6 +11,7 @@ A collection of my favourite skills for [Claude Code](https://claude.ai/claude-c
 | [alphaxiv-paper-lookup](skills/alphaxiv-paper-lookup/SKILL.md) | Look up any arxiv paper on alphaxiv.org to get a structured AI-generated overview |
 | [guided-learning](skills/guided-learning/SKILL.md) | Adaptive tutor that traces prerequisites, assesses your level, and teaches using Socratic/Bloom's/Visual styles — with code examples and a shareable HTML page |
 | [frontend-design](skills/frontend-design/SKILL.md) | Create distinctive, production-grade frontend interfaces with high design quality that avoids generic AI aesthetics |
+| [investigate](skills/investigate/SKILL.md) | Deep investigation of bugs, performance issues, or unexpected behavior with parallel evidence collection and root cause analysis |
 
 ## Install
 
