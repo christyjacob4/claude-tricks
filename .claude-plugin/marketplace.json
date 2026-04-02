@@ -13,7 +13,9 @@
       "skills": [
         "./skills/code-explainer",
         "./skills/auto-research",
-        "./skills/alphaxiv-paper-lookup"
+        "./skills/alphaxiv-paper-lookup",
+        "./skills/guided-learning",
+        "./skills/frontend-design"
       ]
     }
   ]

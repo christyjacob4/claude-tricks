@@ -9,6 +9,8 @@ A collection of my favourite skills for [Claude Code](https://claude.ai/claude-c
 | [code-explainer](skills/code-explainer/SKILL.md) | Explains codebases visually with ASCII architecture diagrams, code flow tracing, and interactive deep-dives |
 | [auto-research](skills/auto-research/SKILL.md) | Autonomous research loop — runs experiments on GPUs, keeps improvements, discards failures, and iterates until stopped |
 | [alphaxiv-paper-lookup](skills/alphaxiv-paper-lookup/SKILL.md) | Look up any arxiv paper on alphaxiv.org to get a structured AI-generated overview |
+| [guided-learning](skills/guided-learning/SKILL.md) | Adaptive tutor that traces prerequisites, assesses your level, and teaches using Socratic/Bloom's/Visual styles — with code examples and a shareable HTML page |
+| [frontend-design](skills/frontend-design/SKILL.md) | Create distinctive, production-grade frontend interfaces with high design quality that avoids generic AI aesthetics |
 
 ## Install
 
