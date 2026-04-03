@@ -14,7 +14,38 @@ A collection of my favourite skills for [Claude Code](https://claude.ai/claude-c
 | [investigate](skills/investigate/SKILL.md) | Deep investigation of bugs, performance issues, or unexpected behavior with parallel evidence collection and root cause analysis |
 | [debug](skills/debug/SKILL.md) | Systematically debug and fix failing tests, build errors, or runtime issues with aggressive parallelization |
 
-## Install
+## Status Lines
+
+| Status Line | Description |
+|-------------|-------------|
+| [default](statuslines/default/) | Two-line status bar — directory, git branch, model name (Claude orange), context window bar, and session cost |
+
+### Install a status line
+
+```bash
+git clone https://github.com/christyjacob4/claude-tricks.git
+cd claude-tricks/statuslines/default
+./install.sh
+```
+
+Or one-liner (no clone needed):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/christyjacob4/claude-tricks/main/statuslines/default/statusline.sh -o ~/.claude/statusline.sh && chmod +x ~/.claude/statusline.sh
+```
+
+Then add to `~/.claude/settings.json`:
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline.sh"
+  }
+}
+```
+
+## Install Skills
 
 ### Option 1: Plugin (recommended)
 
