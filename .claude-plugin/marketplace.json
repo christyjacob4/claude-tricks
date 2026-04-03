@@ -17,7 +17,8 @@
         "./skills/guided-learning",
         "./skills/frontend-design",
         "./skills/investigate",
-        "./skills/debug"
+        "./skills/debug",
+        "./skills/opentui"
       ]
     }
   ]

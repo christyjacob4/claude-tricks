@@ -13,6 +13,7 @@ A collection of my favourite skills for [Claude Code](https://claude.ai/claude-c
 | [frontend-design](skills/frontend-design/SKILL.md) | Create distinctive, production-grade frontend interfaces with high design quality that avoids generic AI aesthetics |
 | [investigate](skills/investigate/SKILL.md) | Deep investigation of bugs, performance issues, or unexpected behavior with parallel evidence collection and root cause analysis |
 | [debug](skills/debug/SKILL.md) | Systematically debug and fix failing tests, build errors, or runtime issues with aggressive parallelization |
+| [opentui](skills/opentui/SKILL.md) | Comprehensive OpenTUI skill for building terminal user interfaces — covers core API, React reconciler, and Solid reconciler |
 
 ## Agents
 
