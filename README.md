@@ -14,6 +14,7 @@ A collection of my favourite skills for [Claude Code](https://claude.ai/claude-c
 | [investigate](skills/investigate/SKILL.md) | Deep investigation of bugs, performance issues, or unexpected behavior with parallel evidence collection and root cause analysis |
 | [debug](skills/debug/SKILL.md) | Systematically debug and fix failing tests, build errors, or runtime issues with aggressive parallelization |
 | [opentui](skills/opentui/SKILL.md) | Comprehensive OpenTUI skill for building terminal user interfaces — covers core API, React reconciler, and Solid reconciler |
+| [slide-deck](skills/slide-deck/SKILL.md) | Create stunning interactive HTML slide decks on any topic — researches papers and case studies, builds animated presentations with speaker notes |
 
 ## Agents
 

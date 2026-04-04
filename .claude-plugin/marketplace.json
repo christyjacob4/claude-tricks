@@ -18,7 +18,8 @@
         "./skills/frontend-design",
         "./skills/investigate",
         "./skills/debug",
-        "./skills/opentui"
+        "./skills/opentui",
+        "./skills/slide-deck"
       ]
     }
   ]
