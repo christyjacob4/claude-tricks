@@ -19,7 +19,8 @@
         "./skills/investigate",
         "./skills/debug",
         "./skills/opentui",
-        "./skills/slide-deck"
+        "./skills/slide-deck",
+        "./skills/pdf"
       ]
     }
   ]

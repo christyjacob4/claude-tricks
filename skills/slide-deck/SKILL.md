@@ -1,12 +1,19 @@
 ---
 name: slide-deck
-description: Create stunning interactive slide deck presentations on any topic. Researches the topic using web search and academic papers, gathers case studies and real-world examples, then produces a self-contained interactive HTML slide deck with animations and a companion markdown file with speaker notes. TRIGGER THIS SKILL when users want to create a presentation, slide deck, talk, pitch deck, lecture slides, keynote, or any slide-based content — whether they say "make a presentation on X", "create slides about X", "build a deck for my talk on X", "I need slides for X", "prepare a presentation", "make a pitch deck", or any request involving slides, decks, or presentations.
+description: Create stunning interactive slide deck presentations on any topic. Researches the topic using web search and academic papers (via alphaxiv), extracts figures and diagrams from papers (via pdf skill), gathers case studies and real-world examples, then produces a self-contained interactive HTML slide deck with D3.js charts, Anime.js animations, and a companion markdown file with speaker notes. TRIGGER THIS SKILL when users want to create a presentation, slide deck, talk, pitch deck, lecture slides, keynote, or any slide-based content — whether they say "make a presentation on X", "create slides about X", "build a deck for my talk on X", "I need slides for X", "prepare a presentation", "make a pitch deck", or any request involving slides, decks, or presentations.
 argument-hint: "<topic>"
 ---
 
 # Slide Deck Creator
 
-Create stunning, interactive HTML slide deck presentations backed by deep research — academic papers, case studies, and real-world examples. Every deck is a self-contained HTML file with keyboard/click navigation and cinematic animations, plus a companion markdown file with speaker notes.
+Create stunning, interactive HTML slide deck presentations backed by deep research — academic papers, case studies, and real-world examples. Every deck is a self-contained HTML file with D3.js visualizations, Anime.js animations, keyboard/click navigation, and embedded figures extracted from referenced papers. Plus a companion markdown file with speaker notes.
+
+## Dependencies
+
+This skill uses other skills from the claude-tricks plugin:
+- **alphaxiv-paper-lookup** — for fetching structured overviews of arxiv papers
+- **pdf** — for extracting figures, tables, and diagrams from paper PDFs
+- **frontend-design** — for visual design principles and aesthetics
 
 ## Arguments
 
@@ -37,11 +44,15 @@ Present questions as a concise numbered list. **WAIT for the user to answer befo
 
 After getting requirements, launch **parallel research agents** to gather material.
 
-### Agent 1 — Academic Research
+### Agent 1 — Academic Research & Figure Extraction
 
 > Research academic foundations for: `$ARGUMENTS`
 >
-> Use **WebSearch** to find relevant arxiv paper IDs. For each promising paper, fetch its structured overview using alphaxiv:
+> **Step 1: Find papers**
+> Use **WebSearch** to find relevant arxiv paper IDs on the topic.
+>
+> **Step 2: Get paper overviews via alphaxiv**
+> For each promising paper, fetch its structured overview:
 >
 > ```bash
 > curl -s "https://alphaxiv.org/overview/{PAPER_ID}.md"
@@ -55,13 +66,43 @@ After getting requirements, launch **parallel research agents** to gather materi
 >
 > For each paper, extract:
 > - Key concepts and contributions
-> - Important diagrams, figures, or data worth referencing
+> - Important diagrams, figures, tables, or results worth showing in slides
 > - Quotable findings or conclusions
 > - How it connects to the presentation topic
 >
-> Also search for survey papers that provide broader context.
+> **Step 3: Extract figures and diagrams from papers**
+> For papers with important visuals (architecture diagrams, result tables, charts, figures), download the PDF and extract the images using the **pdf** skill:
 >
-> Return: a structured summary of 3-8 relevant papers with extracted insights, ordered by relevance.
+> ```bash
+> # Download the paper PDF
+> curl -sL "https://arxiv.org/pdf/{PAPER_ID}" -o /tmp/{PAPER_ID}.pdf
+>
+> # Convert relevant pages to images
+> python3 scripts/convert_pdf_to_images.py /tmp/{PAPER_ID}.pdf /tmp/{PAPER_ID}_pages/
+> ```
+>
+> Use `pdfplumber` to identify figure bounding boxes and extract specific figures:
+>
+> ```python
+> import pdfplumber
+> from PIL import Image
+>
+> pdf = pdfplumber.open(f"/tmp/{PAPER_ID}.pdf")
+> page = pdf.pages[PAGE_NUMBER]
+> # Extract image at bounding box coordinates
+> im = page.to_image(resolution=300)
+> im.crop((x0, y0, x1, y1)).save(f"/tmp/{PAPER_ID}_fig{N}.png")
+> ```
+>
+> Convert extracted images to base64 for embedding in the HTML deck:
+>
+> ```bash
+> base64 -i /tmp/{PAPER_ID}_fig{N}.png
+> ```
+>
+> Return: a structured summary of 3-8 relevant papers with extracted insights, ordered by relevance. For each paper with useful visuals, include the base64-encoded figure data and a caption/citation.
+>
+> Also search for survey papers that provide broader context.
 
 ### Agent 2 — Case Studies & Industry Research
 
@@ -87,9 +128,16 @@ After getting requirements, launch **parallel research agents** to gather materi
 > - What analogies or metaphors would make complex ideas click?
 > - What visual metaphors or imagery best represent key concepts?
 > - What's the "aha moment" — the single insight that makes the whole talk worth attending?
-> - What data should be visualized, and how? (charts, diagrams, timelines, comparisons)
+> - What data should be visualized, and how? (D3.js charts, animated diagrams, interactive graphs)
+> - Which concepts need interactive visualizations vs static figures from papers?
 >
-> Return: a proposed narrative arc (beginning/middle/end), 3-5 visual concepts, the central "aha moment", and a suggested slide outline.
+> For each slide concept, decide the diagram type:
+> - **Paper figure**: Use extracted image from the paper (architecture diagrams, published results, tables)
+> - **Interactive D3.js**: Use for data that benefits from interactivity (charts, graphs, network diagrams, treemaps, timelines)
+> - **Animated diagram**: Use Anime.js for step-by-step concept explanations (algorithm flows, process diagrams, build-up sequences)
+> - **CSS visual**: Use for simple decorative or conceptual visuals (geometric patterns, gradients, shapes)
+>
+> Return: a proposed narrative arc (beginning/middle/end), 3-5 visual concepts with diagram type for each, the central "aha moment", and a suggested slide outline.
 
 **Wait for all agents to complete.** Synthesize findings into a unified content plan.
 
@@ -107,16 +155,24 @@ Present a detailed slide-by-slide outline to the user:
 
 ### Slide-by-Slide Plan
 
-1. **[Slide Title]** — [What it covers, key visual, animation idea]
-2. **[Slide Title]** — [What it covers, key visual, animation idea]
+1. **[Slide Title]** — [What it covers] | Visual: [paper figure / D3 chart / anime.js animation / CSS]
+2. **[Slide Title]** — [What it covers] | Visual: [type + description]
 ...
-N. **[Slide Title]** — [What it covers, key visual, animation idea]
+N. **[Slide Title]** — [What it covers] | Visual: [type + description]
 
 ### Design Direction
 - Theme: [dark/light, color palette, mood]
 - Typography: [font pairing]
 - Visual style: [e.g., "geometric minimalism with data-heavy accents"]
-- Animation approach: [e.g., "staggered reveals, morphing transitions"]
+- Animation approach: [e.g., "staggered reveals with D3 transitions"]
+
+### Paper Figures to Embed
+- Figure X from [Paper Name] — [which slide, what it shows]
+- Table Y from [Paper Name] — [which slide, what it shows]
+
+### Interactive Visualizations
+- Slide N: [D3.js chart type — what data it shows]
+- Slide M: [Anime.js animation — what concept it illustrates]
 
 ### Sources
 - [Paper 1 — how it's used]
@@ -134,7 +190,10 @@ After approval, build both deliverables. These can be built in parallel by two a
 
 ### Agent 1 — HTML Slide Deck
 
-Build a single self-contained HTML file with ALL CSS and JS inline. No external dependencies except Google Fonts CDN.
+Build a single self-contained HTML file. External dependencies loaded from CDN:
+- **Google Fonts** — typography
+- **D3.js** (v7) — interactive data visualizations and charts
+- **Anime.js** (v3) — complex timeline animations and interactive diagrams
 
 #### Slide Engine Requirements
 
@@ -182,37 +241,111 @@ Before writing any code, commit to a bold aesthetic direction for THIS specific 
 - **Title slides**: Big, bold, cinematic — minimal text, maximum impact
 - **Content slides**: Clear hierarchy — heading, body, supporting visual
 - **Code slides**: Syntax-highlighted code blocks with monospace font, dark background even on light themes
-- **Data slides**: Custom CSS charts, comparison tables, or metric callouts — no chart libraries
+- **Data slides**: D3.js interactive charts, comparison tables, or metric callouts
 - **Quote slides**: Large pull quotes with attribution
-- **Image concept slides**: CSS-generated visual metaphors (geometric shapes, gradients, patterns)
+- **Paper figure slides**: Embedded images from papers with citation, styled with subtle borders/shadows
+- **Interactive diagram slides**: Anime.js step-by-step animations that build up a concept
 - **Two-column slides**: Side-by-side comparisons, before/after, concept vs example
 - **Full-bleed slides**: Edge-to-edge visual impact for key moments
 
-**Animations & Micro-interactions:**
-- Slide entrance: elements stagger in with `animation-delay` (0ms, 100ms, 200ms...)
-- Text reveals: fade-up or slide-in from bottom
-- Code blocks: typewriter effect or line-by-line reveal
-- Data/metrics: count-up animation for numbers
-- Diagrams: progressive build (elements appear one by one)
-- Transitions between slides: smooth translateX or fade
-- Hover states on interactive elements (if any)
-- Use CSS `@keyframes` — no JS animation libraries
+#### Two Types of Diagrams
 
-**Visual Details:**
+**1. Paper Figures (static, extracted from PDFs)**
+Figures, tables, results, and architecture diagrams extracted from referenced papers using the **pdf** skill. These are embedded as base64 `<img>` tags:
+
+```html
+<div class="paper-figure">
+  <img src="data:image/png;base64,{BASE64_DATA}" alt="[description]" />
+  <figcaption>Figure 3 from Smith et al., 2024 — "[Paper Title]"</figcaption>
+</div>
+```
+
+Style paper figures with:
+- Subtle border or shadow to frame them
+- Caption below with paper citation in a dimmed, smaller font
+- Optional zoom-on-click interaction
+- Responsive sizing within the slide
+
+**2. Interactive Visualizations (D3.js + Anime.js)**
+For data and concepts that benefit from interactivity or animation:
+
+**D3.js** — use for data-driven visuals:
+- Bar charts, line charts, area charts with animated transitions
+- Network/graph diagrams (force-directed layouts)
+- Treemaps and sunburst charts for hierarchical data
+- Timelines with interactive hover states
+- Scatter plots and bubble charts
+- Geographic maps if relevant
+- Sankey diagrams for flow data
+
+```html
+<div class="d3-chart" id="slide-5-chart"></div>
+<script>
+  // D3 visualization initialized when slide becomes active
+  function initSlide5Chart() {
+    const svg = d3.select('#slide-5-chart').append('svg')...
+  }
+</script>
+```
+
+**Anime.js** — use for animated concept diagrams:
+- Step-by-step algorithm or process visualizations
+- Architecture diagrams that build up piece by piece
+- Animated flowcharts and sequence diagrams
+- Morphing shapes to illustrate transformations
+- Staggered timeline animations for complex concepts
+- Path-drawing animations (SVG stroke-dashoffset)
+
+```html
+<div class="anime-diagram" id="slide-8-diagram">
+  <!-- SVG elements for the diagram -->
+</div>
+<script>
+  function initSlide8Diagram() {
+    anime.timeline({...})
+      .add({ targets: '.step-1', opacity: [0,1], translateY: [20,0] })
+      .add({ targets: '.step-2', opacity: [0,1], translateY: [20,0] })
+      ...
+  }
+</script>
+```
+
+Each interactive visualization should:
+- Initialize only when its slide becomes active (lazy loading)
+- Replay from the beginning when navigating back to the slide
+- Have a fallback static state if animations are disabled
+- Be sized responsively within the slide container
+
+#### Animations & Micro-interactions
+
+- Slide entrance: Anime.js timeline with staggered element reveals
+- Text reveals: fade-up or slide-in with easing
+- Code blocks: typewriter effect or line-by-line reveal via Anime.js
+- Data/metrics: D3 count-up transitions for numbers
+- D3 charts: animated data entry with `transition().duration(800)`
+- Diagrams: Anime.js progressive build (elements appear one by one along a timeline)
+- Transitions between slides: CSS translateX or fade
+- Hover states on D3 chart elements (tooltips, highlights)
+
+#### Visual Details
+
 - Subtle noise/grain texture overlay for depth
 - Geometric accent shapes (circles, lines, dots) as decorative elements
 - Consistent spacing rhythm (use multiples of 8px)
 - Code blocks with custom syntax highlighting via CSS (keywords, strings, comments in different colors)
 - Proper quotation marks and typographic details (em dashes, ellipses)
 - Slide numbers in a refined, unobtrusive style
+- Paper figures framed with consistent styling throughout the deck
 
-**Content Formatting:**
+#### Content Formatting
+
 - Maximum 6-8 lines of text per slide — less is more
 - One key idea per slide
 - Use progressive disclosure — reveal complexity gradually
 - Data points should be visually prominent (large numbers, colored callouts)
 - Citations as subtle footnotes (small, dimmed, bottom of slide)
 - Code snippets should be real, runnable, and syntax-highlighted
+- Paper figures should be large enough to read but not overwhelming
 
 #### HTML Structure
 
@@ -225,6 +358,10 @@ Before writing any code, commit to a bold aesthetic direction for THIS specific 
   <title>[Presentation Title]</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <!-- Google Fonts -->
+  <!-- D3.js from CDN -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- Anime.js from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
   <style>
     /* CSS custom properties for the design system */
     :root { ... }
@@ -232,6 +369,9 @@ Before writing any code, commit to a bold aesthetic direction for THIS specific 
     /* Reset and base */
     /* Slide engine styles */
     /* Slide layout utilities */
+    /* Paper figure styles */
+    /* D3 chart container styles */
+    /* Anime diagram styles */
     /* Animation keyframes */
     /* Syntax highlighting */
     /* Individual slide styles */
@@ -244,14 +384,32 @@ Before writing any code, commit to a bold aesthetic direction for THIS specific 
   <div class="deck">
     <div class="slide" id="slide-1">...</div>
     <div class="slide" id="slide-2">...</div>
+    <!-- Slide with paper figure -->
+    <div class="slide" id="slide-5">
+      <div class="paper-figure">
+        <img src="data:image/png;base64,..." alt="..." />
+        <figcaption>...</figcaption>
+      </div>
+    </div>
+    <!-- Slide with D3 chart -->
+    <div class="slide" id="slide-8">
+      <div class="d3-chart" id="chart-8"></div>
+    </div>
+    <!-- Slide with Anime.js diagram -->
+    <div class="slide" id="slide-12">
+      <div class="anime-diagram" id="diagram-12">...</div>
+    </div>
     ...
   </div>
   <div class="controls">...</div>
   <script>
     // Slide engine: navigation, transitions, keyboard handling
-    // Animation triggers on slide enter
+    // Animation triggers on slide enter/leave
+    // D3 chart initialization functions
+    // Anime.js diagram initialization functions
     // URL hash management
     // Overview/grid mode
+    // Lazy loading: init visualizations only when slide is active
   </script>
 </body>
 </html>
@@ -275,6 +433,8 @@ Build a markdown file with detailed speaker notes for each slide:
 - [Point 2 — with data/citation]
 - [Point 3 — with transition to next slide]
 
+**Visual on screen:** [Description of what the audience sees — paper figure, D3 chart, animation]
+
 **Timing:** ~[X] minutes
 
 **Notes:** [Any delivery tips, audience interaction cues, or demo instructions]
@@ -288,6 +448,7 @@ Build a markdown file with detailed speaker notes for each slide:
 Each slide's notes should include:
 - The key message (one sentence)
 - 3-5 talking points with supporting data and citations
+- Description of the visual element on screen and what to call attention to
 - Suggested timing
 - Transition cue to the next slide
 - Delivery tips where relevant (pause here, ask the audience, demo this)
@@ -303,12 +464,15 @@ After both files are generated:
 1. **Open the HTML file** and verify:
    - All slides render correctly
    - Navigation works (arrow keys, clicks, hash URLs)
+   - D3 charts render and animate correctly
+   - Anime.js diagrams play their timelines
+   - Paper figures display at correct resolution and sizing
    - Animations are smooth and purposeful
    - Code blocks are syntax-highlighted
    - No text overflow or layout breaks
    - Responsive at different viewport sizes
 
-2. **Cross-check** speaker notes against slides — every slide has notes, every note matches its slide content
+2. **Cross-check** speaker notes against slides — every slide has notes, every note matches its slide content, visual descriptions match actual visuals
 
 3. **Fix any issues** found during review
 
@@ -322,5 +486,5 @@ After both files are generated:
 
 | File | Description |
 |------|-------------|
-| `[topic]-slides.html` | Self-contained interactive HTML slide deck |
-| `[topic]-speaker-notes.md` | Markdown speaker notes with timing and talking points |
+| `[topic]-slides.html` | Self-contained interactive HTML slide deck with D3.js charts, Anime.js animations, and embedded paper figures |
+| `[topic]-speaker-notes.md` | Markdown speaker notes with timing, talking points, and visual descriptions |
